@@ -26,3 +26,16 @@
 *.exe
 *.out
 *.app
+
+# Visual Studio
+*.sln
+*.vcxproj*
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
