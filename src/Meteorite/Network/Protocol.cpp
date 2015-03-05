@@ -24,6 +24,23 @@
 
 #include <Meteorite/Network/Message/ConnectRequest.h>
 
+int GetLengthOfVarint(unsigned int value)
+{
+	int i = 0;
+	do
+	{
+		uint8_t nextByte = value & 0x7F;
+		value >>= 7;
+
+		if (value)
+			nextByte |= 0x80;
+
+		i++;
+	} while (value);
+
+	return i;
+}
+
 namespace Meteorite
 {
 	namespace Network
@@ -40,10 +57,8 @@ namespace Meteorite
 
 			uint8_t id = bytes[sizeof(int16_t)];
 
-			ds.setBuffer(&bytes);
-			ds.setPos(0);
-			ds.setValid(true);
-
+			reader.setBuffer(&bytes);
+			reader.setPos(0);
 
 			Meteorite::Network::Message* message = nullptr;
 
@@ -53,13 +68,15 @@ namespace Meteorite
 			{
 			case CMSG_CONNECT_REQUEST:
 			{
+				app->getLogger()->info("Received CMSG_CONNECT_REQUEST");
+
 				message = new Meteorite::Network::Message_ConnectRequest;
 				auto msg = (Meteorite::Network::Message_ConnectRequest*) message;
-				ds.read(msg->length);
-				ds.read(msg->id);
-				ds.read(msg->version);
+				reader.read(msg->length);
+				reader.read(msg->id);
+				reader.read(msg->version);
 
-				if (ds.isValid())
+				if (reader.isValid())
 					state = Meteorite::Network::Protocol::STATE_GOOD;
 
 				break;
@@ -68,10 +85,10 @@ namespace Meteorite
 			default:
 			{
 				int16_t len;
-				ds.read(len);
-				ds.skip(len - 1);
+				reader.read(len);
+				reader.skip(len - 2);
 
-				if (ds.isValid())
+				if (reader.isValid())
 					state = Meteorite::Network::Protocol::STATE_GOOD;
 
 				char str[256];
@@ -82,24 +99,44 @@ namespace Meteorite
 			}
 			}
 
-			if (state = Meteorite::Network::Protocol::STATE_GOOD)
+			if (state == Meteorite::Network::Protocol::STATE_GOOD)
 			{
 				*out = message;
-				ds.remove();
+				reader.trim();
 			}
 			else
 			{
 				delete message;
 			}
 
-			ds.getBuffer()->clear();
-			ds.reset();
+			reader.reset();
 
 			return state;
 		}
 
-		int Protocol::compose(std::vector<uint8_t>& bytes, const Meteorite::Network::Message& msg)
+		int Protocol::compose(std::vector<uint8_t>& bytes, const std::vector<shared_ptr<Meteorite::Network::Message>>& outgoing)
 		{
+			writer.setBuffer(&bytes);
+
+			for (auto it = outgoing.begin(); it != outgoing.end(); ++it)
+			{
+				auto message = (*it).get();
+
+				switch (message->id)
+				{
+				case CMSG_CONNECT_REQUEST:
+				{
+					auto msg = (Meteorite::Network::Message_ConnectRequest*) message;
+					msg->length = sizeof(msg->length) + sizeof(msg->id) + GetLengthOfVarint(msg->version.length()) + msg->version.length();
+					
+					writer.write(msg->length);
+					writer.write(msg->id);
+					writer.write(msg->version);
+				}
+				break;
+				}
+			}
+
 			return Meteorite::Network::Protocol::STATE_GOOD;
 		}
 	}

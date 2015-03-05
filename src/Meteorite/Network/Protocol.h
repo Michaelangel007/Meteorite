@@ -21,7 +21,8 @@
 
 #include <Meteorite/Common.h>
 
-#include <Meteorite/Network/DataStream.h>
+#include <Meteorite/Network/DataReader.h>
+#include <Meteorite/Network/DataWriter.h>
 
 namespace Meteorite
 {
@@ -53,13 +54,14 @@ namespace Meteorite
 
 			Protocol(shared_ptr<Meteorite::Application> app);
 
-			int parse(std::vector<uint8_t>& bytes, Meteorite::Network::Message** msg);
-			int compose(std::vector<uint8_t>& bytes, const Meteorite::Network::Message& msg);
+			int parse(std::vector<uint8_t>& bytes, Meteorite::Network::Message** out);
+			int compose(std::vector<uint8_t>& bytes, const std::vector<shared_ptr<Meteorite::Network::Message>>& outgoing);
 
 		private:
 			shared_ptr<Meteorite::Application> app;
 
-			Meteorite::Network::DataStream ds;
+			Meteorite::Network::DataReader reader;
+			Meteorite::Network::DataWriter writer;
 		};
 	}
 }
