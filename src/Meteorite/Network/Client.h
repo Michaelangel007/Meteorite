@@ -64,13 +64,33 @@ namespace Meteorite
 			 * n: Number of bytes read
 			 */
 			void handleRead(const boost::system::error_code& e, size_t n);
-			void handleWrite();
+
+			/*
+			 * e: Boost error code
+			 * n: Number of bytes written
+			 */
+			void handleWrite(const boost::system::error_code& e, size_t n);
 			
 		public:
+			/*
+			 * Returns true if the client is still alive.
+			 */
+			bool isAlive();
+
 			/*
 			 * Returns a reference to the client's boost socket.
 			 */
 			boost::asio::ip::tcp::socket& getSocket();
+
+			/*
+			 * Returns a reference to the vector of incoming messages.
+			 */
+			std::vector<shared_ptr<Meteorite::Network::Message>>& getIncoming();
+
+			/*
+			 * Returns a reference to the vector of outgoing messages.
+			 */
+			std::vector<shared_ptr<Meteorite::Network::Message>>& getOutgoing();
 
 		private:
 			shared_ptr<Meteorite::Application> app;
@@ -80,7 +100,7 @@ namespace Meteorite
 			boost::asio::ip::tcp::socket socket;
 			boost::array<uint8_t, 8192> tmp;
 			std::vector<uint8_t> incomingBuffer, outgoingBuffer;
-			std::vector<shared_ptr<Meteorite::Network::Message>> incoming;
+			std::vector<shared_ptr<Meteorite::Network::Message>> incoming, outgoing;
 		};
 	}
 }

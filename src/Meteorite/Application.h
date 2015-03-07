@@ -36,6 +36,11 @@ namespace Meteorite
 		class NetworkManager;
 	}
 
+	namespace Game
+	{
+		class WorldManager;
+	}
+
 	class Application : public enable_shared_from_this<Meteorite::Application>
 	{
 	public:
@@ -74,10 +79,16 @@ namespace Meteorite
 		 */
 		shared_ptr<Meteorite::Network::NetworkManager> getNetworkManager();
 
+		/*
+		 * Returns a smart pointer to the application's world manager.
+		 */
+		shared_ptr<Meteorite::Game::WorldManager> getWorldManager();
+
 	private:
 		bool initialised = false, running = false;
 
 		shared_ptr<Meteorite::Logger> logger;
 		shared_ptr<Meteorite::Network::NetworkManager> networkManager;
+		shared_ptr<Meteorite::Game::WorldManager> worldManager;
 	};
 }

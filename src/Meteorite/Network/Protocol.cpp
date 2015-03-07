@@ -23,6 +23,8 @@
 #include <Meteorite/Network/Message.h>
 
 #include <Meteorite/Network/Message/ConnectRequest.h>
+#include <Meteorite/Network/Message/FatalError.h>
+#include <Meteorite/Network/Message/ConnectionApproved.h>
 
 int GetLengthOfVarint(unsigned int value)
 {
@@ -68,8 +70,6 @@ namespace Meteorite
 			{
 			case CMSG_CONNECT_REQUEST:
 			{
-				app->getLogger()->info("Received CMSG_CONNECT_REQUEST");
-
 				message = new Meteorite::Network::Message_ConnectRequest;
 				auto msg = (Meteorite::Network::Message_ConnectRequest*) message;
 				reader.read(msg->length);
@@ -124,14 +124,25 @@ namespace Meteorite
 
 				switch (message->id)
 				{
-				case CMSG_CONNECT_REQUEST:
+				case SMSG_FATAL_ERROR:
 				{
-					auto msg = (Meteorite::Network::Message_ConnectRequest*) message;
-					msg->length = sizeof(msg->length) + sizeof(msg->id) + GetLengthOfVarint(msg->version.length()) + msg->version.length();
-					
+					auto msg = (Meteorite::Network::Message_FatalError*) message;
+					msg->length = sizeof(msg->length) + sizeof(msg->id) + GetLengthOfVarint(msg->error.length()) + msg->error.length();
+
 					writer.write(msg->length);
 					writer.write(msg->id);
-					writer.write(msg->version);
+					writer.write(msg->error);
+				}
+				break;
+
+				case SMSG_CONNECTION_APPROVED:
+				{
+					auto msg = (Meteorite::Network::Message_ConnectionApproved*) message;
+					msg->length = sizeof(msg->length) + sizeof(msg->id) + sizeof(msg->playerSlot);
+
+					writer.write(msg->length);
+					writer.write(msg->id);
+					writer.write(msg->playerSlot);
 				}
 				break;
 				}

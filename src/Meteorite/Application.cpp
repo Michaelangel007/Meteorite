@@ -20,6 +20,7 @@
 #include <Meteorite/Application.h>
 
 #include <Meteorite/Network/NetworkManager.h>
+#include <Meteorite/Game/WorldManager.h>
 
 namespace Meteorite
 {
@@ -64,6 +65,15 @@ namespace Meteorite
 		
 		logger->info("NetworkManager initialised.");
 
+		// Initialise the WorldManager
+		worldManager = make_shared<Meteorite::Game::WorldManager>(shared_from_this());
+		logger->info("Initialising WorldManager..");
+
+		if (!worldManager->initialise())
+			return false;
+
+		logger->info("WorldManager initialised.");
+
 		initialised = true;
 		return true;
 	}
@@ -92,6 +102,7 @@ namespace Meteorite
 	void Application::run()
 	{
 		networkManager->run();
+		worldManager->run();
 	}
 
 	void Application::stop()
@@ -107,5 +118,10 @@ namespace Meteorite
 	shared_ptr<Meteorite::Network::NetworkManager> Application::getNetworkManager()
 	{
 		return networkManager;
+	}
+
+	shared_ptr<Meteorite::Game::WorldManager> Application::getWorldManager()
+	{
+		return worldManager;
 	}
 }

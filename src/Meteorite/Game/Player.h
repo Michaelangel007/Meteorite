@@ -23,19 +23,31 @@
 
 namespace Meteorite
 {
+	class Application;
+
 	namespace Network
 	{
-		struct Color
-		{
-			uint8_t r;
-			uint8_t g;
-			uint8_t b;
-		};
+		class Client;
+	}
 
-		struct Message
+	namespace Game
+	{
+		class Player
 		{
-			int16_t length;
-			uint8_t id;
+		public:
+			Player(shared_ptr<Meteorite::Application> app, shared_ptr<Meteorite::Network::Client> client, uint8_t playerSlot);
+			~Player();
+
+			void run();
+
+			shared_ptr<Meteorite::Network::Client> getClient();
+
+			uint8_t getPlayerSlot();
+
+		private:
+			shared_ptr<Meteorite::Application> app;
+			shared_ptr<Meteorite::Network::Client> client;
+			uint8_t playerSlot;
 		};
 	}
 }

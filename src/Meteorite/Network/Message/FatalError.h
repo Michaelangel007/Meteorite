@@ -21,21 +21,16 @@
 
 #include <Meteorite/Common.h>
 
+#include <Meteorite/Network/Message.h>
+
 namespace Meteorite
 {
 	namespace Network
 	{
-		struct Color
+		struct Message_FatalError : public Meteorite::Network::Message
 		{
-			uint8_t r;
-			uint8_t g;
-			uint8_t b;
-		};
-
-		struct Message
-		{
-			int16_t length;
-			uint8_t id;
+			/* The error message. */
+			std::string error;
 		};
 	}
 }

@@ -17,25 +17,35 @@
  * along with Meteorite.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include <Meteorite/Game/Player.h>
 
-#include <Meteorite/Common.h>
+#include <Meteorite/Application.h>
 
 namespace Meteorite
 {
-	namespace Network
+	namespace Game
 	{
-		struct Color
+		Player::Player(shared_ptr<Meteorite::Application> app, shared_ptr<Meteorite::Network::Client> client, uint8_t playerSlot) :
+			app(app), client(client), playerSlot(playerSlot)
 		{
-			uint8_t r;
-			uint8_t g;
-			uint8_t b;
-		};
+		}
 
-		struct Message
+		Player::~Player()
 		{
-			int16_t length;
-			uint8_t id;
-		};
+		}
+
+		void Player::run()
+		{
+		}
+
+		shared_ptr<Meteorite::Network::Client> Player::getClient()
+		{
+			return client;
+		}
+
+		uint8_t Player::getPlayerSlot()
+		{
+			return playerSlot;
+		}
 	}
 }

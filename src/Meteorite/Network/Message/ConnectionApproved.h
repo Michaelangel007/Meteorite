@@ -21,21 +21,16 @@
 
 #include <Meteorite/Common.h>
 
+#include <Meteorite/Network/Message.h>
+
 namespace Meteorite
 {
 	namespace Network
 	{
-		struct Color
+		struct Message_ConnectionApproved : public Meteorite::Network::Message
 		{
-			uint8_t r;
-			uint8_t g;
-			uint8_t b;
-		};
-
-		struct Message
-		{
-			int16_t length;
-			uint8_t id;
+			/* Player slot, between 0-254. */
+			uint8_t playerSlot;
 		};
 	}
 }

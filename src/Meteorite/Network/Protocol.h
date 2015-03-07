@@ -39,7 +39,9 @@ namespace Meteorite
 		 */
 		enum PacketTypes
 		{
-			CMSG_CONNECT_REQUEST = 0x01,
+			CMSG_CONNECT_REQUEST						= 0x01,
+			SMSG_FATAL_ERROR							= 0x02,
+			SMSG_CONNECTION_APPROVED					= 0x03,
 		};
 
 		class Protocol

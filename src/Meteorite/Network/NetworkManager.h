@@ -67,7 +67,6 @@ namespace Meteorite
 
 			boost::asio::io_service service;
 			shared_ptr<boost::asio::ip::tcp::acceptor> acceptor;
-			std::vector<boost::shared_ptr<Meteorite::Network::Client>> clients;
 			shared_ptr<Meteorite::Network::Protocol> protocol;
 
 			/*

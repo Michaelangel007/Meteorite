@@ -22,6 +22,7 @@
 #include <Meteorite/Application.h>
 #include <Meteorite/Network/Client.h>
 #include <Meteorite/Network/Protocol.h>
+#include <Meteorite/Game/WorldManager.h>
 
 namespace Meteorite
 {
@@ -69,8 +70,19 @@ namespace Meteorite
 				std::string ip = client->getSocket().remote_endpoint().address().to_v4().to_string();
 				app->getLogger()->info(boost::str(boost::format("Incoming connection from %1%") % ip));
 
-				clients.push_back(client);
-				client->start();
+				int playerId = app->getWorldManager()->addNewPlayer(client);
+
+				if (playerId == -1)
+				{
+					// TODO: FatalError response
+					app->getLogger()->error("Server full, could not accept client.");
+					client->stop();
+				}
+				else
+				{
+					app->getLogger()->info(boost::str(boost::format("Assigned player ID %1%") % (int) playerId));
+					client->start();
+				}
 			}
 			else
 			{
