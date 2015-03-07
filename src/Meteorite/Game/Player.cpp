@@ -20,6 +20,9 @@
 #include <Meteorite/Game/Player.h>
 
 #include <Meteorite/Application.h>
+#include <Meteorite/Network/Client.h>
+#include <Meteorite/Network/Protocol.h>
+#include <Meteorite/Network/Message/All.h>
 
 namespace Meteorite
 {
@@ -38,6 +41,14 @@ namespace Meteorite
 		{
 		}
 
+		void Player::kick(const std::string& reason)
+		{
+			auto msg = make_shared<Meteorite::Network::Message_FatalError>();
+			msg->id = Meteorite::Network::SMSG_FATAL_ERROR;
+			msg->error = reason;
+			client->getOutgoing().push_back(msg);
+		}
+
 		shared_ptr<Meteorite::Network::Client> Player::getClient()
 		{
 			return client;
@@ -46,6 +57,16 @@ namespace Meteorite
 		uint8_t Player::getPlayerSlot()
 		{
 			return playerSlot;
+		}
+
+		void Player::setState(PlayerState state)
+		{
+			this->state = state;
+		}
+
+		PlayerState Player::getState()
+		{
+			return state;
 		}
 	}
 }

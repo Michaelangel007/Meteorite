@@ -24,9 +24,7 @@
 #include <Meteorite/Network/Client.h>
 #include <Meteorite/Network/Message.h>
 #include <Meteorite/Network/Protocol.h>
-
-#include <Meteorite/Network/Message/ConnectRequest.h>
-#include <Meteorite/Network/Message/FatalError.h>
+#include <Meteorite/Network/Message/All.h>
 
 namespace Meteorite
 {
@@ -119,7 +117,7 @@ namespace Meteorite
 			app->getLogger()->info("Returning SMSG_FATAL_ERROR, with message 'Meteorite Server'.");
 
 			auto response = make_shared<Meteorite::Network::Message_FatalError>();
-			response->id = 0x02;
+			response->id = Meteorite::Network::SMSG_FATAL_ERROR;
 			response->error = "Meteorite Server";
 			player->getClient()->getOutgoing().push_back(response);
 		}

@@ -21,10 +21,7 @@
 
 #include <Meteorite/Application.h>
 #include <Meteorite/Network/Message.h>
-
-#include <Meteorite/Network/Message/ConnectRequest.h>
-#include <Meteorite/Network/Message/FatalError.h>
-#include <Meteorite/Network/Message/ConnectionApproved.h>
+#include <Meteorite/Network/Message/All.h>
 
 int GetLengthOfVarint(unsigned int value)
 {

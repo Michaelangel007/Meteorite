@@ -32,6 +32,13 @@ namespace Meteorite
 
 	namespace Game
 	{
+		enum PlayerState
+		{
+			STATE_DEFAULT,
+			STATE_LOGGING_IN,
+			STATE_PLAYING,
+		};
+
 		class Player
 		{
 		public:
@@ -40,14 +47,38 @@ namespace Meteorite
 
 			void run();
 
+			/*
+			 * Sends a SMSG_FATAL_ERROR message to the player.
+			 */
+			void kick(const std::string& reason);
+
+			/*
+			 * Returns the network client associated with this player.
+			 */
 			shared_ptr<Meteorite::Network::Client> getClient();
 
+			/*
+			 * Returns the ID of the player (between 0 and 254).
+			 */
 			uint8_t getPlayerSlot();
+
+			/*
+			 * Sets the current state of the player. Certain packets will only be handled
+			 * under specific states.
+			 */
+			void setState(PlayerState state);
+
+			/*
+			 * Returns the current state of the player.
+			 */
+			PlayerState getState();
 
 		private:
 			shared_ptr<Meteorite::Application> app;
 			shared_ptr<Meteorite::Network::Client> client;
 			uint8_t playerSlot;
+
+			PlayerState state = PlayerState::STATE_DEFAULT;
 		};
 	}
 }
