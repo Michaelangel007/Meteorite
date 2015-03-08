@@ -59,12 +59,12 @@ namespace Meteorite
 			return playerSlot;
 		}
 
-		void Player::setState(State state)
+		void Player::setState(Meteorite::Game::Player::State state)
 		{
 			this->state = state;
 		}
 
-		State Player::getState()
+		Meteorite::Game::Player::State Player::getState()
 		{
 			return state;
 		}
