@@ -41,6 +41,14 @@ namespace Meteorite
 
 		class Player
 		{
+			enum State
+			{
+				STATE_DEFAULT = 0,
+				STATE_INITIALIZING = 1,
+				STATE_INITIALIZED = 2,
+				STATE_PLAYING = 10,
+			};
+
 		public:
 			Player(shared_ptr<Meteorite::Application> app, shared_ptr<Meteorite::Network::Client> client, uint8_t playerSlot);
 			~Player();
@@ -66,19 +74,19 @@ namespace Meteorite
 			 * Sets the current state of the player. Certain packets will only be handled
 			 * under specific states.
 			 */
-			void setState(PlayerState state);
+			void setState(Meteorite::Game::Player::State state);
 
 			/*
 			 * Returns the current state of the player.
 			 */
-			PlayerState getState();
+			Meteorite::Game::Player::State getState();
 
 		private:
 			shared_ptr<Meteorite::Application> app;
 			shared_ptr<Meteorite::Network::Client> client;
 			uint8_t playerSlot;
 
-			PlayerState state = PlayerState::STATE_DEFAULT;
+			Meteorite::Game::Player::State state = STATE_DEFAULT;
 		};
 	}
 }
