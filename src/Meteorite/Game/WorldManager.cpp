@@ -68,11 +68,21 @@ namespace Meteorite
 					continue;
 				}
 
+				// Check if client was kicked, but didn't close the socket
+				if (player->getState() == Player::STATE_KICKED)
+				{
+					players[player->getPlayerSlot()] = nullptr;
+					client->stop();
+					continue;
+				}
+
 				// Handle incoming messages
 				for (auto it = client->getIncoming().begin(); it != client->getIncoming().end(); ++it)
 				{
 					auto message = *it;
-					messageHandlers[message->id](player, message);
+
+					if (message != nullptr)
+						messageHandlers[message->id](player, message);
 				}
 
 				client->getIncoming().clear();
@@ -111,15 +121,15 @@ namespace Meteorite
 
 		void WorldManager::onConnectRequest(shared_ptr<Meteorite::Game::Player> player, shared_ptr<Meteorite::Network::Message> message)
 		{
-			auto msg = reinterpret_cast<Meteorite::Network::Message_ConnectRequest*>(&(*message));
+			if (player->getState() != Player::STATE_DEFAULT)
+				return;
+
+			auto msg = (Meteorite::Network::Message_ConnectRequest*) message.get();
 
 			app->getLogger()->info(boost::str(boost::format("Received connection request from ID: %1%") % (int) player->getPlayerSlot()));
 			app->getLogger()->info("Returning SMSG_FATAL_ERROR, with message 'Meteorite Server'.");
 
-			auto response = make_shared<Meteorite::Network::Message_FatalError>();
-			response->id = Meteorite::Network::SMSG_FATAL_ERROR;
-			response->error = "Meteorite Server";
-			player->getClient()->getOutgoing().push_back(response);
+			player->kick("Meteorite Server");
 		}
 	}
 }

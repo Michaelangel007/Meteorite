@@ -41,6 +41,11 @@ namespace Meteorite
 		{
 		}
 
+		void Player::sendMessage(shared_ptr<Meteorite::Network::Message> message)
+		{
+			client->getOutgoing().push_back(message);
+		}
+
 		void Player::kick(const std::string& reason)
 		{
 			auto msg = make_shared<Meteorite::Network::Message_FatalError>();
@@ -59,12 +64,12 @@ namespace Meteorite
 			return playerSlot;
 		}
 
-		void Player::setState(State state)
+		void Player::setState(Meteorite::Game::Player::State state)
 		{
 			this->state = state;
 		}
 
-		State Player::getState()
+		Meteorite::Game::Player::State Player::getState()
 		{
 			return state;
 		}

@@ -28,32 +28,32 @@ namespace Meteorite
 	namespace Network
 	{
 		class Client;
+		struct Message;
 	}
 
 	namespace Game
 	{
-		enum PlayerState
-		{
-			STATE_DEFAULT,
-			STATE_LOGGING_IN,
-			STATE_PLAYING,
-		};
-
 		class Player
 		{
+		public:
 			enum State
 			{
+				STATE_KICKED = -1,
 				STATE_DEFAULT = 0,
 				STATE_INITIALIZING = 1,
 				STATE_INITIALIZED = 2,
 				STATE_PLAYING = 10,
 			};
 
-		public:
 			Player(shared_ptr<Meteorite::Application> app, shared_ptr<Meteorite::Network::Client> client, uint8_t playerSlot);
 			~Player();
 
 			void run();
+
+			/*
+			 * Pushes the specified message to the outgoing player queue.
+			 */
+			void sendMessage(shared_ptr<Meteorite::Network::Message> message);
 
 			/*
 			 * Sends a SMSG_FATAL_ERROR message to the player.
