@@ -92,6 +92,10 @@ namespace Meteorite
 				sprintf(str, "Received unhandled packet with header: 0x%02x (%i bytes)", id, len);
 				app->getLogger()->info(str);
 
+#ifdef METEORITE_DEBUG
+				packetDumper.dump(id, reader.getBuffer(), reader.getPos() - (len - 3), len - 3);
+#endif
+
 				break;
 			}
 			}

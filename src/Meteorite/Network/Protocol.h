@@ -23,6 +23,7 @@
 
 #include <Meteorite/Network/DataReader.h>
 #include <Meteorite/Network/DataWriter.h>
+#include <Meteorite/Network/PacketDumper.h>
 
 namespace Meteorite
 {
@@ -64,6 +65,10 @@ namespace Meteorite
 
 			Meteorite::Network::DataReader reader;
 			Meteorite::Network::DataWriter writer;
+
+#ifdef METEORITE_DEBUG
+			Meteorite::Network::PacketDumper packetDumper;
+#endif
 		};
 	}
 }
